@@ -13,7 +13,7 @@
 |---|---|
 | 模块包名 | `com.tmxy.adfree` |
 | 版本 | 1.0.7（versionCode 8） |
-| 安装包 | [`TmxyAdFree.apk`](TmxyAdFree.apk)（36 KB） |
+| 下载 | **[去 Releases 下载 TmxyAdFree.apk](https://github.com/xunfen/CleanTMXY/releases/latest)**（36 KB） |
 | 作用域 | `com.tmall.campus.and` |
 
 ---
@@ -30,6 +30,9 @@
 ---
 
 ## 安装
+
+**先下载 APK：** 到 **[Releases](https://github.com/xunfen/CleanTMXY/releases/latest)** 下载 `TmxyAdFree.apk`。
+本仓库只存源码，APK 由 Release 分发。
 
 ### 方式一：有 root（LSPosed）
 
@@ -107,7 +110,6 @@ powershell -ExecutionPolicy Bypass -File patch-lspatch.ps1 -OriginalApk <原版�
 ## 目录
 
 ```
-├── TmxyAdFree.apk          安装包（用 build-module.ps1 重新构建可覆盖）
 ├── 源码/
 │   ├── AndroidManifest.xml
 │   ├── assets/xposed_init    模块入口：com.tmxy.adfree.HookEntry
@@ -121,6 +123,9 @@ powershell -ExecutionPolicy Bypass -File patch-lspatch.ps1 -OriginalApk <原版�
 ├── check_ids.py              资源 id 全量比对（2227 个）
 └── download.py               下载辅助（本机 PowerShell TLS 有问题，故走 Python）
 ```
+
+> **APK 不在仓库里**，请到 [Releases](https://github.com/xunfen/CleanTMXY/releases/latest) 下载。
+> 仓库只存源码；`build/` 是构建输出目录，已在 `.gitignore` 中排除。
 
 **读代码建议顺序**：`HookEntry` → `AdSdkKiller` → `AdBlock` → `AdConfigBlock`。
 
