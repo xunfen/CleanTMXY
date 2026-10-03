@@ -12,7 +12,7 @@
 | | |
 |---|---|
 | 模块包名 | `com.tmxy.adfree` |
-| 版本 | 1.0.7（versionCode 8） |
+| 版本 | 1.0.8（versionCode 9） |
 | 下载 | **[去 Releases 下载 TmxyAdFree.apk](https://github.com/xunfen/CleanTMXY/releases/latest)**（36 KB） |
 | 作用域 | `com.tmall.campus.and` |
 

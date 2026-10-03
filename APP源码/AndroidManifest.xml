@@ -1,10 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tmxy.adfree"
-    android:versionCode="8"
-    android:versionName="1.0.7">
+    android:versionCode="9"
+    android:versionName="1.0.8">
 
     <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="35" />
+
+    <!-- Android 11+ 包可见性：不声明的话 getPackageInfo("com.tmall.campus.and")
+         会抛 NameNotFoundException，设置界面就会误报「未安装」。
+         注意：这里只影响【本 App 主动查询别人】，不影响注入端。 -->
+    <queries>
+        <package android:name="com.tmall.campus.and" />
+    </queries>
 
     <application
         android:allowBackup="false"
@@ -18,15 +25,21 @@
         <meta-data android:name="xposedminversion" android:value="82" />
         <meta-data android:name="xposedsharedprefs" android:value="true" />
 
+        <!-- 必须指定 NoActionBar 主题：默认主题带 ActionBar，而 targetSdk 35 在
+             Android 15 上强制 edge-to-edge，内容会从窗口 y=0 开始画，
+             结果被状态栏 + ActionBar 盖住（实测标题和前两行副标题被压掉）。
+             用 Light 是因为界面配色全是浅色，跟随系统深色会变成深底浅字看不清。 -->
         <activity
             android:name=".SettingsActivity"
             android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar"
             android:label="天猫校园净化">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
 
     </application>
 </manifest>
