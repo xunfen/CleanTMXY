@@ -1,6 +1,6 @@
 # CleanTMXY —— 天猫校园去广告模块
 
-> ## 免费开源 · 谨防被骗
+> ## 🆓 免费开源 · 谨防被骗
 >
 > 本项目**完全免费、开源**，唯一发布地址：**<https://github.com/xunfen/CleanTMXY>**
 >
@@ -12,7 +12,7 @@
 | | |
 |---|---|
 | 模块包名 | `com.tmxy.adfree` |
-| 版本 | 1.0.8（versionCode 9） |
+| 版本 | 1.0.9（versionCode 10） |
 | 下载 | **[去 Releases 下载 TmxyAdFree.apk](https://github.com/xunfen/CleanTMXY/releases/latest)**（36 KB） |
 | 作用域 | `com.tmall.campus.and` |
 
@@ -73,12 +73,12 @@ powershell -ExecutionPolicy Bypass -File patch-lspatch.ps1 -OriginalApk <原版�
 3. 直接登录即可，无需 root / LSPosed / 任何框架
 ```
 
->  天猫校园**每次更新都要重新打**（versionCode 变了，旧补丁包对应旧版本）。
+> ⚠️ 天猫校园**每次更新都要重新打**（versionCode 变了，旧补丁包对应旧版本）。
 >
->  原理是 LSPatch 系列分支的**签名绕过**（`-l 2`）。阿里 SecurityGuard 的「安全图片」用 APK 签名加密，
+> ⚠️ 原理是 LSPatch 系列分支的**签名绕过**（`-l 2`）。阿里 SecurityGuard 的「安全图片」用 APK 签名加密，
 > 直接重签名会导致 `SecException` → 首页空白 → native 崩溃；签名绕过让 SecurityGuard 看到原始签名，一切照常。
 >
->  官方 `LSPosed/LSPatch` **已停更**（0.6，2023），在 Android 15 上会抛
+> ⚠️ 官方 `LSPosed/LSPatch` **已停更**（0.6，2023），在 Android 15 上会抛
 > `NoSuchFieldError: AppBindData#compatInfo` 直接闪退 —— 这是 LSPatch 自身的系统兼容性问题，
 > **跟天猫校园、跟签名都无关，别误判成"被检测了"**。请用活跃分支
 > [JingMatrix/LSPatch](https://github.com/JingMatrix/LSPatch) v1.2 或
@@ -107,13 +107,25 @@ powershell -ExecutionPolicy Bypass -File patch-lspatch.ps1 -OriginalApk <原版�
 
 ---
 
+## 调整设置
+
+模块在 **天猫校园首页右下角**放了一个半透明的小圆钮（「净」）。点它打开设置。
+
+两种安装方式的行为**不一样**，这是有原因的：
+
+| 安装方式 | 点「净」钮之后 | 为什么 |
+|---|---|---|
+| **有 root（LSPosed）** | 跳转到模块 App 自己的设置页面 | 模块读的是**模块 App 的** prefs（LSPosed 的 `xposedsharedprefs` 开了跨 UID 的口子），所以设置也必须跑在模块 App 进程里写那份 |
+| **免 root（补丁版）** | 在首页上**弹出一层设置弹窗** | 模块跑在**天猫校园进程**里、读宿主自己的 prefs（跨 UID 读不到模块 App 的），所以设置也在那个进程里弹，两边才读写同一份 |
+
+> **改动开关后需要强制停止天猫校园再打开才生效** —— 模块只在启动时读一次配置。
 ## 目录
 
 ```
 ├── 源码/
 │   ├── AndroidManifest.xml
 │   ├── assets/xposed_init    模块入口：com.tmxy.adfree.HookEntry
-│   └── src/com/tmxy/adfree/  11 个类
+│   └── src/com/tmxy/adfree/  13 个类
 ├── build/
 │   ├── build.ps1             免 Gradle 构建（aapt2→javac→d8→zipalign→apksigner）
 │   └── xposed-api.jar        legacy Xposed API（构建必需）
@@ -168,7 +180,7 @@ python check_ids.py       # 应输出：命中 19 / 缺失 0
 
 ## 已验证 / 未验证
 
-###  已真机验证（Android 15 / MuMu x86_64）
+### ✅ 已真机验证（Android 15 / MuMu x86_64）
 
 - 模块注入 main / `:channel` / `:pushservice` 三进程；自检**无一条「没挂上」**
 - **开屏广告消失**：冷启动 2 秒直接进首页
@@ -179,8 +191,9 @@ python check_ids.py       # 应输出：命中 19 / 缺失 0
 
 ### ❌ 未验证
 
-- **只在 Android 15 / x86_64 及极少数的设备上验证过**，其他 Android 版本与真机 arm64 没测
+- **只在 Android 15 / x86_64 上验证过**，其他 Android 版本与真机 arm64 没测
 - **只在 5.7.2 上验证过**，其他版本会有部分 Hook 匹配不上（会记 `miss` 跳过，不会崩）
+- 底部导航裁剪功能**未完成**，默认关闭（`trim_bottom_tab=false`）。根因已定位但没调通
 
 ---
 

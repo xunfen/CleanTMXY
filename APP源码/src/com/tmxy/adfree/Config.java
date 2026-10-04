@@ -62,6 +62,11 @@ public final class Config {
 
     private static XSharedPreferences prefs;
 
+    /** 内嵌（免 root）模式：模块跑在宿主进程里，直接读宿主自己的 prefs。
+     *  LSPosed 模式下 XSharedPreferences 可读，就不会走到这里。 */
+    private static android.content.SharedPreferences hostPrefs;
+    private static volatile boolean useHost;
+
     private Config() {}
 
     public static synchronized void init() {
@@ -102,11 +107,55 @@ public final class Config {
         exportKey = getB("export_key", true);
     }
 
-    private static boolean getB(String key, boolean def) {
-        if (prefs == null) {
-            return def;
+    /**
+     * 内嵌模式：由宿主 Activity 调用一次，改用宿主自己的 prefs。
+     *
+     * <p>免 root 的补丁版把模块内嵌进天猫校园，模块跑在<b>天猫校园的 UID</b> 下，
+     * 根本读不到独立模块 App（com.tmxy.adfree）的私有 prefs（实测：目录 drwx------，
+     * 跨 UID 进不去，XSharedPreferences 静默返回默认值）。所以这里改用宿主自己的
+     * prefs —— 和跑在宿主里的设置弹窗（{@link SettingsPanel}）写的是同一份。
+     *
+     * <p>LSPosed 场景下 XSharedPreferences 是【可读】的（LSPosed 的
+     * xposedsharedprefs=true 开了口子），那就保持原样不动。
+     */
+    public static synchronized void attachHost(Context host) {
+        if (useHost || host == null) {
+            return;
+        }
+        // 判断 XSharedPreferences 这条路通不通：直接看模块 App 的 prefs 文件能不能读。
+        // 不用 XSharedPreferences.isReadable() —— 我们链接的 xposed-api.jar 是精简 stub，
+        // 没有这个方法（编译期报"找不到符号"）。
+        try {
+            java.io.File f = new java.io.File(
+                    "/data/data/" + HookEntry.MODULE_PKG + "/shared_prefs/" + PREFS + ".xml");
+            if (f.canRead()) {
+                return;   // LSPosed 场景：文件可读，继续用模块自己的 prefs
+            }
+        } catch (Throwable ignored) {
         }
         try {
+            hostPrefs = host.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            useHost = true;
+            Logx.ok("Config: 改用宿主 prefs（内嵌模式）—— 设置弹窗与模块共用同一份");
+            reload();
+        } catch (Throwable t) {
+            Logx.w("Config.attachHost 失败: " + t);
+        }
+    }
+
+    /** 当前是不是"内嵌模式"（模块跑在宿主进程、读写宿主自己的 prefs）。 */
+    public static boolean isHostMode() {
+        return useHost;
+    }
+
+    private static boolean getB(String key, boolean def) {
+        try {
+            if (useHost) {
+                return hostPrefs.getBoolean(key, def);
+            }
+            if (prefs == null) {
+                return def;
+            }
             return prefs.getBoolean(key, def);
         } catch (Throwable t) {
             return def;
@@ -114,10 +163,13 @@ public final class Config {
     }
 
     private static long getL(String key, long def) {
-        if (prefs == null) {
-            return def;
-        }
         try {
+            if (useHost) {
+                return hostPrefs.getLong(key, def);
+            }
+            if (prefs == null) {
+                return def;
+            }
             return prefs.getLong(key, def);
         } catch (Throwable t) {
             return def;

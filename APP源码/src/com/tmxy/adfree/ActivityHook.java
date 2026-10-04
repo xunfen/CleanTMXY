@@ -58,6 +58,12 @@ public final class ActivityHook {
                         return;
                     }
                     Activity a = (Activity) param.thisObject;
+                    // 内嵌模式：第一次拿到 Context 时切到宿主 prefs（LSPosed 场景下会自动跳过）
+                    Config.attachHost(a);
+                    // 首页右下角挂一个设置小钮
+                    if ("com.tmall.campus.and.main.MainActivity".equals(a.getClass().getName())) {
+                        SettingsEntry.attach(a);
+                    }
                     for (Listener l : LISTENERS) {
                         try {
                             l.onActivityResumed(a);
