@@ -4,10 +4,10 @@
 >
 > 本项目**完全免费、开源**，唯一发布地址：**<https://github.com/xunfen/CleanTMXY>**
 >
-> **如果你是通过付费购买得到的，那你被骗了。** 本项目没有任何收费版本，也不会通过任何渠道出售。
+>  本项目没有任何收费版本，也不会通过任何渠道出售。
 > **本模块仅供学习交流，严禁用于商业用途，请与24小时内删除**
 
-针对 **天猫校园 `com.tmall.campus.and` 5.7.2**（versionCode 50007002）的 Xposed 去广告模块。
+针对 **天猫校园 `com.tmall.campus.and` 5.7.2**（versionCode 50007002）的 Xposed 去广告模块在其他低于该版本的尚未进行测试，可自行测试是否生效。
 
 | | |
 |---|---|
@@ -18,21 +18,21 @@
 
 ---
 
-## 做了什么
+## 功能
 
 - **开屏广告**：冷启动 2 秒直接进首页，热启动广告同样跳过
 - **第三方广告 SDK 完全不启动**：TopOn(Taku) / 穿山甲 / 优量汇 / 快手 / 百度 / 美数 / 倍孜 / 章鱼 / UBiX 等
 - **首页精简**：去掉整块淘宝客商品流（「9.9元秒杀」那排导购 tab + 商品网格）、会员推广卡、小红花卡、AI 悬浮入口
 - **屏蔽强制更新弹窗**
 - **关闭摇一摇广告**（精准挂 App 自己的开关，不动系统传感器）
-- 顺带：绕过 5.7.2 新增的「自动化开锁防护」`AutomationGuard`，以及门锁参数导出（详见设置界面）
+- ......
 
 ---
 
 ## 安装
 
 **先下载 APK：** 到 **[Releases](https://github.com/xunfen/CleanTMXY/releases/latest)** 下载 `TmxyAdFree.apk`。
-本仓库只存源码，APK 由 Release 分发。
+模块APK在Release中，亦可自行打包编译，在Release中同时提供经过**NPatch**刷入模块的天猫校园Apk，但是**存在签名问题，不影响正常使用**。
 
 ### 方式一：有 root（LSPosed）
 
@@ -83,6 +83,8 @@ powershell -ExecutionPolicy Bypass -File patch-lspatch.ps1 -OriginalApk <原版�
 > **跟天猫校园、跟签名都无关，别误判成"被检测了"**。请用活跃分支
 > [JingMatrix/LSPatch](https://github.com/JingMatrix/LSPatch) v1.2 或
 > [NPatch](https://github.com/7723mod/NPatch)。
+
+**注意：本模块也支持通过shizuku授权NPatch/LSPatch在无Root的环境下刷入模块，建议使用NPatch，LSPatch在Android>=15时会失效**
 
 ---
 
@@ -191,9 +193,8 @@ python check_ids.py       # 应输出：命中 19 / 缺失 0
 
 ###  未验证
 
-- **只在 Android 15 / x86_64 上验证过**，其他 Android 版本与真机 arm64 没测
-- **只在 5.7.2 上验证过**，其他版本会有部分 Hook 匹配不上（会记 `miss` 跳过，不会崩）
-- 底部导航裁剪功能**未完成**，默认关闭（`trim_bottom_tab=false`）。根因已定位但没调通
+- **只在 Android 15 / x86_64 以及极少数机型上上验证过**，其他 Android 版本与真机 arm64 没测，理论上支持其他机型
+- **只在 5.7.2 上验证过**，其他版本会有部分 Hook 匹配不上（会记 `miss` 跳过，不会崩），目前（2026.10.4为最新版本，后续会根据实际需要若版本更新会测试新版本是否能够使用，旧版本请自行测试是否正常使用）
 
 ---
 
@@ -203,3 +204,4 @@ python check_ids.py       # 应输出：命中 19 / 缺失 0
 脚本会逐条对照反编译源码。
 
 本项目仅供**学习与逆向技术研究**，请勿用于任何违反服务条款或法律的用途。
+**本模块仅供学习交流，严禁用于商业用途，请与24小时内删除**
