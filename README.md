@@ -1,6 +1,6 @@
 # CleanTMXY —— 天猫校园去广告模块
 
-> ## 🆓 免费开源 · 谨防被骗
+> ## 免费开源 · 谨防被骗
 >
 > 本项目**完全免费、开源**，唯一发布地址：**<https://github.com/xunfen/CleanTMXY>**
 >
@@ -73,12 +73,12 @@ powershell -ExecutionPolicy Bypass -File patch-lspatch.ps1 -OriginalApk <原版�
 3. 直接登录即可，无需 root / LSPosed / 任何框架
 ```
 
-> ⚠️ 天猫校园**每次更新都要重新打**（versionCode 变了，旧补丁包对应旧版本）。
+>  天猫校园**每次更新都要重新打**（versionCode 变了，旧补丁包对应旧版本）。
 >
-> ⚠️ 原理是 LSPatch 系列分支的**签名绕过**（`-l 2`）。阿里 SecurityGuard 的「安全图片」用 APK 签名加密，
+>  原理是 LSPatch 系列分支的**签名绕过**（`-l 2`）。阿里 SecurityGuard 的「安全图片」用 APK 签名加密，
 > 直接重签名会导致 `SecException` → 首页空白 → native 崩溃；签名绕过让 SecurityGuard 看到原始签名，一切照常。
 >
-> ⚠️ 官方 `LSPosed/LSPatch` **已停更**（0.6，2023），在 Android 15 上会抛
+>  官方 `LSPosed/LSPatch` **已停更**（0.6，2023），在 Android 15 上会抛
 > `NoSuchFieldError: AppBindData#compatInfo` 直接闪退 —— 这是 LSPatch 自身的系统兼容性问题，
 > **跟天猫校园、跟签名都无关，别误判成"被检测了"**。请用活跃分支
 > [JingMatrix/LSPatch](https://github.com/JingMatrix/LSPatch) v1.2 或
@@ -168,7 +168,7 @@ python check_ids.py       # 应输出：命中 19 / 缺失 0
 
 ## 已验证 / 未验证
 
-### ✅ 已真机验证（Android 15 / MuMu x86_64）
+###  已真机验证（Android 15 / MuMu x86_64）
 
 - 模块注入 main / `:channel` / `:pushservice` 三进程；自检**无一条「没挂上」**
 - **开屏广告消失**：冷启动 2 秒直接进首页
@@ -179,9 +179,8 @@ python check_ids.py       # 应输出：命中 19 / 缺失 0
 
 ### ❌ 未验证
 
-- **只在 Android 15 / x86_64 上验证过**，其他 Android 版本与真机 arm64 没测
+- **只在 Android 15 / x86_64 及极少数的设备上验证过**，其他 Android 版本与真机 arm64 没测
 - **只在 5.7.2 上验证过**，其他版本会有部分 Hook 匹配不上（会记 `miss` 跳过，不会崩）
-- 底部导航裁剪功能**未完成**，默认关闭（`trim_bottom_tab=false`）。根因已定位但没调通
 
 ---
 
